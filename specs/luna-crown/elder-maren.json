@@ -1,0 +1,15 @@
+{
+  "order": 8,
+  "name": "Elder Maren",
+  "role": "the pack elder",
+  "group": "pack",
+  "theme": "wolf",
+  "hood": "#b9ad9c",
+  "accent": "#d8cbb5",
+  "ears": "wolf",
+  "eyes": "sleepy",
+  "brows": "worried",
+  "mouth": "frown",
+  "mark": "whisper",
+  "size": "small"
+}

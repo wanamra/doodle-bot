@@ -1,0 +1,13 @@
+{
+  "order": 10,
+  "name": "Omega Wren",
+  "role": "the other gossip",
+  "group": "pack",
+  "theme": "wolf",
+  "hood": "#b7c2c6",
+  "accent": "#d5dfe2",
+  "ears": "wolf",
+  "mouth": "open",
+  "mark": "whisper",
+  "size": "small"
+}

@@ -4,164 +4,55 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Amra's Doodle Bot</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Hooded chibi friends drawn by code from JSON specs, in the Little Magic Studio style. Download any friend as PNG or SVG, or make a scene.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Mali:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
-<style>
-/* Layout: a lilac desk with one sketchbook page on it (the character sheet), then a quiet "spec lab" workbench below. Single sketchbook look on purpose. */
-:root {
-  color-scheme: light;
-  --desk: #ede5ef;
-  --paper: #fbf5ea;
-  --ink: #3d3340;
-  --ink-soft: #6f6374;
-  --lilac: #9a82cf;
-  --lilac-deep: #6f58a8;
-  --washi-pink: #f6cfd9;
-  --washi-mint: #cfe8d6;
-  --washi-yellow: #f6e2a4;
-  --washi-blue: #d3def3;
-  --line: #d9cbbd;
-  --f-hand: "Gaegu", "Comic Sans MS", "Chalkboard SE", cursive;
-  --f-body: "Mali", "Trebuchet MS", system-ui, sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-}
-* { box-sizing: border-box; }
-body {
-  background: var(--desk);
-  color: var(--ink);
-  font-family: var(--f-body);
-  font-size: 15px;
-  line-height: 1.55;
-}
-.wrap {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding-block: 28px 56px;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: grid;
-  gap: 36px;
-}
-header { display: grid; gap: 6px; }
-.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
-h1 { font-family: var(--f-hand); font-weight: 700; font-size: clamp(40px, 7vw, 64px); line-height: 1; margin: 0; text-wrap: balance; }
-h1 .wand { color: var(--lilac-deep); }
-.lede { max-width: 62ch; margin: 4px 0 0; color: var(--ink-soft); }
-h2 { font-family: var(--f-hand); font-weight: 700; font-size: 32px; line-height: 1.1; margin: 0; }
-
-/* sketchbook page */
-.book { position: relative; background-color: var(--paper); background-image: var(--paper-grain, none); border-radius: 6px 14px 14px 6px; box-shadow: 0 1px 0 #d8cbd9, 0 18px 40px -22px #6b5a7a; padding: 26px 22px 30px 58px; }
-.rings { position: absolute; left: 10px; top: 18px; bottom: 18px; width: 34px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
-.rings svg { display: block; }
-.sheet-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 14px; text-align: center; margin-bottom: 10px; }
-.sheet-title .big { font-family: var(--f-hand); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; padding: 6px 22px; border: 2px dashed #b9a6d9; border-radius: 40px; }
-.sheet-title .tag { font-family: var(--f-hand); font-size: 22px; background: var(--washi-yellow); padding: 0 14px; transform: rotate(-1.5deg); }
-.looks { display: inline-flex; border: 1.5px solid #c9b8e3; border-radius: 999px; padding: 2px; gap: 2px; }
-.looks button { font: 600 13px var(--f-body); color: var(--lilac-deep); background: none; border: 0; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
-.looks button[aria-pressed="true"] { background: var(--lilac-deep); color: var(--paper); }
-.cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 6px; }
-.friend { appearance: none; border: 0; background: none; padding: 4px 4px 10px; cursor: pointer; display: grid; justify-items: center; gap: 2px; border-radius: 14px; color: inherit; font: inherit; transition: transform .25s ease, background .2s; }
-.friend:hover { background: #f3e9f5; }
-.friend:focus-visible { outline: 2px dashed var(--lilac-deep); outline-offset: 2px; }
-.friend.on { background: #efe5f6; }
-.friend svg { width: 100%; max-width: 170px; height: auto; display: block; }
-.washi { font-family: var(--f-hand); font-weight: 700; font-size: 24px; line-height: 1.2; padding: 0 16px; border-radius: 3px; }
-.friend .theme { font-family: var(--f-mono); font-size: 11px; color: var(--ink-soft); letter-spacing: .04em; }
-.hop { animation: hop .5s ease; }
-@keyframes hop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(-10px) } }
-
-/* pipeline */
-.pipe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; list-style: none; padding: 0; margin: 0; counter-reset: s; }
-.pipe li { counter-increment: s; display: grid; gap: 2px; padding-top: 10px; border-top: 2px dotted var(--line); }
-.pipe li::before { content: counter(s); font-family: var(--f-hand); font-weight: 700; font-size: 22px; color: var(--lilac-deep); }
-.pipe b { font-family: var(--f-hand); font-size: 22px; font-weight: 700; line-height: 1.1; }
-.pipe span { font-size: 13.5px; color: var(--ink-soft); }
-
-/* lab */
-.lab { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 26px; align-items: start; }
-.stage { background-color: var(--paper); background-image: var(--paper-grain, none); border-radius: 14px; padding: 12px; display: grid; justify-items: center; gap: 8px; box-shadow: 0 10px 28px -20px #6b5a7a; }
-.stage svg { width: 100%; max-width: 300px; height: auto; display: block; }
-.stage .washi { font-size: 30px; }
-.controls { display: grid; gap: 14px; min-width: 0; }
-.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px 12px; }
-.fields label { display: grid; gap: 3px; font-size: 12px; font-family: var(--f-mono); color: var(--ink-soft); letter-spacing: .03em; }
-select, input[type="text"] { font: 15px var(--f-body); color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 8px; width: 100%; }
-input[type="color"] { width: 100%; height: 36px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper); padding: 2px; cursor: pointer; }
-select:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--lilac-deep); outline-offset: 2px; }
-.btn { font: 600 14px var(--f-body); color: var(--paper); background: var(--lilac-deep); border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
-.btn.ghost { background: transparent; color: var(--lilac-deep); border: 1.5px solid var(--lilac); }
-.btn:hover { filter: brightness(1.06); }
-.spec { min-width: 0; }
-.spec-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
-.spec-head span { font-family: var(--f-mono); font-size: 12px; color: var(--ink-soft); }
-pre { margin: 0; font: 12.5px/1.55 var(--f-mono); background: #f4ecf4; border: 1.5px solid #e2d4e6; border-radius: 12px; padding: 12px 14px; overflow-x: auto; color: var(--ink); max-height: 300px; }
-.note { font-size: 13.5px; color: var(--ink-soft); max-width: 65ch; margin: 0; }
-footer { font-size: 13px; color: var(--ink-soft); }
-
-@media (max-width: 720px) {
-  .lab { grid-template-columns: minmax(0, 1fr); }
-  .pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .book { padding: 20px 12px 24px 40px; }
-  .rings { left: 4px; width: 28px; }
-  .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (prefers-reduced-motion: reduce) { .hop { animation: none; } .friend { transition: none; } }
-</style>
-
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Mali:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f2a52'/%3E%3Cpath d='M17 6 A10 10 0 0 0 17 26 A6.5 10 0 0 1 17 6Z' fill='%23fbf2d5'/%3E%3C/svg%3E">
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <!-- coloured-pencil look: speckled grain + slight hand wobble -->
-    <filter id="pencil" x="-8%" y="-8%" width="116%" height="116%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.15 1.32" result="a"/>
-      <feComposite in="SourceGraphic" in2="a" operator="in" result="g"/>
-      <feTurbulence type="turbulence" baseFrequency="0.045" numOctaves="2" seed="3" result="w"/>
-      <feDisplacementMap in="g" in2="w" scale="2.6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <!-- fineliner pen: crisp ink, flat colour, a little hand wobble -->
-    <filter id="pen" x="-8%" y="-8%" width="116%" height="116%">
-      <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="2" seed="5" result="w"/>
-      <feDisplacementMap in="SourceGraphic" in2="w" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <pattern id="hatch" width="3.2" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
-      <line x1="0" y1="0" x2="0" y2="3.2" stroke="#3d3340" stroke-width=".55" opacity=".22"/>
-    </pattern>
-  </defs>
-</svg>
-
 <div class="wrap">
   <header>
-    <div class="eyebrow">Doodle bot · style test 01</div>
+    <div class="eyebrow">Little Magic Studio · doodle bot</div>
     <h1>Amra's Doodle Bot <span class="wand">✦</span></h1>
-    <p class="lede">Every friend below is drawn by code from a small JSON spec, in the Little Magic Studio look: hooded chibi bots, coloured pencil on sketchbook paper. Tap a friend to open their spec in the lab and change it.</p>
+    <p class="lede">Every friend here is drawn by code from a small JSON spec. Download anyone as a transparent PNG or an SVG, tweak them in the spec lab, or put them in a scene for a thumbnail.</p>
   </header>
 
-  <section class="book" aria-label="Character sheet">
+  <div class="bar">
+    <nav class="tabs" aria-label="Pages">
+      <a href="#" data-view="studio">Studio</a>
+      <a href="#luna-crown" data-view="luna-crown">The Luna Crown</a>
+      <a href="#scenes" data-view="scenes">Scene maker</a>
+    </nav>
+    <span class="looks" role="group" aria-label="Line style"><button type="button" data-look="pen" aria-pressed="true">pen</button><button type="button" data-look="pencil" aria-pressed="false">pencil</button></span>
+  </div>
+
+  <!-- character sheet (Studio or a series) -->
+  <section class="book" id="book" aria-label="Character sheet">
     <div class="rings" id="rings"></div>
-    <div class="sheet-title"><span class="big">Little Magic Studio</span><span class="tag">test cast</span><span class="looks" role="group" aria-label="Line style"><button type="button" data-look="pen" aria-pressed="true">pen</button><button type="button" data-look="pencil" aria-pressed="false">pencil</button></span></div>
-    <div class="cast" id="cast"></div>
+    <div class="sheet-title" id="sheetTitle"></div>
+    <div class="sheet-tools"><button class="btn ghost" id="zipAll" type="button">Download all (PNG + SVG zip)</button></div>
+    <div id="sheet"></div>
   </section>
 
-  <section aria-labelledby="how">
-    <h2 id="how" style="margin-bottom:12px">How the bot will draw</h2>
+  <section id="how" aria-labelledby="howh">
+    <h2 id="howh" style="margin-bottom:12px">How the bot draws</h2>
     <ol class="pipe">
       <li><b>Request</b><span>Someone asks for a friend: a reply, a message or a form.</span></li>
-      <li><b>Spec</b><span>The AI fills in the JSON spec from fixed options only. It never draws pixels.</span></li>
-      <li><b>Render</b><span>This renderer turns the spec into a pencil doodle, the same way every time.</span></li>
-      <li><b>Sheet</b><span>The new friend joins the character sheet with a washi-tape name label.</span></li>
+      <li><b>Spec</b><span>The AI fills in a JSON spec from fixed options only. It never draws pixels.</span></li>
+      <li><b>Render</b><span>The renderer turns the spec into a pen doodle, the same way every time.</span></li>
+      <li><b>Use</b><span>Download the PNG or SVG, or drop the friend into a scene.</span></li>
     </ol>
   </section>
 
-  <section aria-labelledby="labh" style="display:grid;gap:14px">
+  <section id="lab" aria-labelledby="labh" style="display:grid;gap:14px">
     <h2 id="labh">Spec lab</h2>
-    <div class="lab">
+    <div class="bench">
       <div class="stage">
         <div id="big"></div>
         <span class="washi" id="bigName">Nova</span>
+        <div class="dl"><button type="button" data-lab-dl="png">PNG</button><button type="button" data-lab-dl="svg">SVG</button></div>
       </div>
       <div class="controls">
         <div class="row">
@@ -175,292 +66,51 @@ footer { font-size: 13px; color: var(--ink-soft); }
         </div>
       </div>
     </div>
-    <p class="note">The ears, hats, props and marks are fixed lists, so the AI can only pick from parts that are already drawn. That keeps every new friend in the same style as the sheet.</p>
+    <p class="note">Changes in the lab stay in your browser. To keep a friend, copy the spec into the repo's <code>specs/</code> folder and run the build.</p>
   </section>
 
-  <footer>Inspired by kevintngo/doodle-bot: constrained specs, a code renderer, and theme packs as overlays.</footer>
+  <!-- scene maker -->
+  <section id="scenes" aria-labelledby="sceneh" style="display:grid;gap:14px" hidden>
+    <h2 id="sceneh">Scene maker</h2>
+    <div class="bench wide">
+      <div class="scene-stage"><canvas id="sceneCanvas" class="scene-canvas" width="1080" height="1920" aria-label="Scene preview"></canvas></div>
+      <div class="controls">
+        <div>
+          <div class="spec-head"><span>scene ideas</span></div>
+          <div class="presets" id="presets"></div>
+        </div>
+        <div class="fields">
+          <label for="s-frame">frame<select id="s-frame">
+            <option value="story">9:16 story / TikTok</option>
+            <option value="square">1:1 square</option>
+            <option value="wide">16:9 thumbnail</option>
+          </select></label>
+          <label for="s-bg">background<select id="s-bg">
+            <option value="forest">moonlit forest</option>
+            <option value="hall">pack hall</option>
+            <option value="throne">throne room</option>
+            <option value="sky">night sky</option>
+            <option value="paper">sketchbook paper</option>
+          </select></label>
+          <label for="s-1">character 1<select id="s-1"></select></label>
+          <label for="s-2">character 2<select id="s-2"></select></label>
+          <label for="s-3">character 3<select id="s-3"></select></label>
+          <label for="s-4">character 4<select id="s-4"></select></label>
+          <label for="s-cap" class="span2">caption (optional)<input type="text" id="s-cap" maxlength="40" placeholder="She was the true Luna all along"></label>
+        </div>
+        <div class="row">
+          <button class="btn" id="scenePng" type="button">Download scene PNG</button>
+          <span class="toast" id="sceneToast" role="status"></span>
+        </div>
+        <p class="note">The PNG is full size (1080 × 1920 for stories), ready for CapCut, Canva or TikTok.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>Source and specs: <a href="https://github.com/wanamra/doodle-bot">github.com/wanamra/doodle-bot</a>. Inspired by kevintngo/doodle-bot.</footer>
 </div>
 
-<script>
-(() => {
-  const INK = '#3d3340';
-
-  // ---------- the spec schema: every allowed value ----------
-  const OPTIONS = {
-    ears:    ['none', 'wolf', 'elf', 'bunny'],
-    hat:     ['none', 'wizard', 'horn', 'sprout', 'shell', 'flowers', 'halo'],
-    mane:    ['none', 'rainbow', 'moonlight'],
-    eyes:    ['dots', 'happy', 'sleepy', 'wink', 'sparkle', 'heart'],
-    mouth:   ['smile', 'cat', 'open', 'o', 'fangs'],
-    prop:    ['none', 'wand', 'book', 'scroll', 'orb', 'crystal', 'pearl', 'moon', 'plant', 'heart'],
-    pattern: ['none', 'stars', 'moons', 'hearts', 'dots'],
-    wings:   ['none', 'angel', 'fairy'],
-    badge:   ['none', 'star', 'moon', 'heart', 'paw'],
-    mark:    ['none', 'sparkles', 'hearts', 'stars', 'zzz', 'music', 'bubbles'],
-  };
-  const WASHI = ['var(--washi-blue)', 'var(--washi-pink)', 'var(--washi-mint)', 'var(--washi-yellow)'];
-
-    let CAST = [];
-
-  // ---------- tiny helpers ----------
-  const clamp = (v) => Math.max(0, Math.min(255, Math.round(v)));
-  function shade(hex, amt) { // amt -1..1, negative darkens
-    const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
-    const t = amt < 0 ? 0 : 255, p = Math.abs(amt);
-    r = clamp(r + (t - r) * p); g = clamp(g + (t - g) * p); b = clamp(b + (t - b) * p);
-    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-  }
-  function rng(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 10000) / 10000; }; }
-  const P = (d, fill, o = {}) =>
-    `<path d="${d}" fill="${fill || 'none'}" stroke="${o.stroke || INK}" stroke-width="${o.w ?? 1.7}" stroke-linejoin="round" stroke-linecap="round"${o.op ? ` opacity="${o.op}"` : ''}${o.tf ? ` transform="${o.tf}"` : ''}/>` +
-    (o.sketch ? `<path d="${d}" fill="none" stroke="${INK}" stroke-width=".7" opacity=".35" transform="translate(.9 .7)${o.tf ? ' ' + o.tf : ''}"/>` : '');
-  const soft = (d, fill, op = .55) => `<path d="${d}" fill="${fill}" opacity="${op}"/>`;
-  const E = (cx, cy, rx, ry) => `M${cx - rx},${cy} a${rx},${ry} 0 1,0 ${2 * rx},0 a${rx},${ry} 0 1,0 ${-2 * rx},0Z`;
-  const C = (cx, cy, r) => E(cx, cy, r, r);
-  const R = (x, y, w, h, r = 2) => `M${x + r},${y} h${w - 2 * r} q${r},0 ${r},${r} v${h - 2 * r} q0,${r} ${-r},${r} h${-(w - 2 * r)} q${-r},0 ${-r},${-r} v${-(h - 2 * r)} q0,${-r} ${r},${-r}Z`;
-  function star(cx, cy, r, n = 5, inner = .45) { let d = ''; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, rr = i % 2 ? r * inner : r; d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rr).toFixed(1) + ',' + (cy + Math.sin(a) * rr).toFixed(1); } return d + 'Z'; }
-  const sparkle = (cx, cy, r) => star(cx, cy, r, 4, .32);
-  const heart = (x, y, r) => `M${x},${y + r * .9} C${x - r * 1.6},${y - r * .1} ${x - r * .8},${y - r * 1.3} ${x},${y - r * .45} C${x + r * .8},${y - r * 1.3} ${x + r * 1.6},${y - r * .1} ${x},${y + r * .9}Z`;
-  const crescent = (x, y, r) => `M${x},${y - r} A${r},${r} 0 0,0 ${x},${y + r} A${r * .62},${r} 0 0,1 ${x},${y - r}Z`;
-  const mirror = (s) => `<g transform="translate(200 0) scale(-1 1)">${s}</g>`;
-
-  function bodyD() {
-    let d = 'M100,40 C142,40 160,70 157,106 C155,128 159,152 166,182';
-    for (let i = 0; i < 6; i++) d += ' q-11,9 -22,0';
-    return d + ' C41,152 45,128 43,106 C40,70 58,40 100,40Z';
-  }
-
-  let uid = 0;
-  let LOOK = 'pen';
-
-  // ---------- the renderer: spec in, svg out ----------
-  function render(s) {
-    const id = 'c' + (++uid);
-    const hood = s.hood, acc = s.accent, light = shade(hood, .35), dark = shade(hood, -.18);
-    const r = rng(s.name || 'friend');
-    const replacesAntenna = ['wizard', 'horn', 'sprout', 'shell'].includes(s.hat);
-    let o = '';
-
-    // wings (back)
-    if (s.wings === 'angel') { const w = P('M62,118 C22,92 6,118 18,136 C8,148 24,166 44,156 C42,150 52,146 62,138Z', '#fffaf6', { sketch: true }) + P('M28,128 C34,132 40,134 46,134 M24,146 C32,148 40,148 48,146', 'none', { w: 1 }); o += w + mirror(w); }
-    if (s.wings === 'fairy') { const w = P('M60,116 C30,80 10,96 20,118 C26,132 46,132 60,126Z', '#d8f0f3', { sketch: true }) + P('M58,132 C34,138 26,156 38,162 C48,166 58,150 60,138Z', '#e8dcf6'); o += w + mirror(w); }
-
-    // ears behind hood
-    if (s.ears === 'wolf') { const e = P('M64,64 L56,18 L94,44Z', hood, { sketch: true }) + P('M68,56 L62,30 L86,45Z', '#f4b9c6', { w: 1.1 }); o += e + mirror(e); }
-    if (s.ears === 'bunny') { const e = P(E(80, 22, 8, 22), hood, { tf: 'rotate(-14 80 34)', sketch: true }) + P(E(80, 24, 4, 15), '#f4b9c6', { w: 1, tf: 'rotate(-14 80 34)' }); o += e + mirror(e); }
-
-    // antenna
-    if (!replacesAntenna) o += P('M100,41 C99,34 101,28 100,22', 'none', { w: 1.6 }) + P(C(100, 17, 5.5), acc, { sketch: true }) + soft(C(98.2, 15.4, 1.6), '#ffffff', .85);
-
-    // hood body + hatching + pattern
-    const body = bodyD();
-    o += `<clipPath id="${id}b"><path d="${body}"/></clipPath>`;
-    o += P(body, hood, { sketch: true, w: 1.9 });
-    if (LOOK === 'pencil') o += `<path d="${body}" fill="url(#hatch)"/>`;
-    o += soft('M60,170 q-5,8 -2,16 l100,0 q3,-8 -2,-16Z', dark, .18);
-    if (s.pattern !== 'none') {
-      let pat = '';
-      for (let i = 0; i < 26 && (pat.match(/<path/g) || []).length < 10; i++) {
-        const x = 48 + r() * 104, y = 126 + r() * 60;
-        if (Math.hypot(x - 100, y - 150) < 30) continue;
-        const f = { stars: () => P(star(x, y, 3.6), acc, { w: 1 }), moons: () => P(crescent(x, y, 3.8), acc, { w: 1 }), hearts: () => P(heart(x, y, 2.6), acc, { w: 1 }), dots: () => P(C(x, y, 2.2), acc, { w: 1 }) }[s.pattern];
-        pat += f();
-      }
-      o += `<g clip-path="url(#${id}b)">${pat}</g>`;
-    }
-
-    // mane strands that sit on the hood
-    if (s.mane !== 'none') {
-      const cols = s.mane === 'rainbow' ? ['#c9b6f2', '#a9dcef', '#f6b3cb'] : ['#e9e4f6', '#fff3c9', '#d9d2f0'];
-      o += P('M96,42 C70,44 52,70 50,100 C48,120 40,132 32,140 C52,138 60,118 62,100 C64,78 78,56 100,50Z', cols[0], { sketch: true });
-      o += P('M104,45 C84,52 68,76 66,104 C64,124 56,140 46,152 C68,146 76,124 76,104 C78,82 90,62 106,53Z', cols[1]);
-    }
-
-    // elf ears poke out of the hood
-    if (s.ears === 'elf') { const e = P('M64,96 Q42,80 22,74 Q30,100 62,114Z', '#f9dcc8', { sketch: true }) + P('M58,100 Q44,90 32,84', 'none', { w: 1 }); o += e + mirror(e); }
-
-    // face opening
-    o += P(E(100, 100, 43, 36), dark, { w: 1.5 });
-    o += P(E(100, 101, 39, 32), '#fff8ee', { sketch: true });
-    if (s.mane !== 'none') o += P('M98,46 C118,46 134,58 140,76 C126,68 112,66 98,70Z', s.mane === 'rainbow' ? '#f6b3cb' : '#d9d2f0');
-
-    // blush, eyes, mouth
-    o += soft(E(76, 111, 6.5, 3.6), '#f4a7b9') + soft(E(124, 111, 6.5, 3.6), '#f4a7b9');
-    const eye = (x, kind) => ({
-      dots: P(E(x, 101, 3.4, 3.9), INK, { w: 1 }) + soft(C(x - 1.1, 99.6, 1.1), '#fff', .95),
-      happy: P(`M${x - 5},${103} Q${x},${95} ${x + 5},${103}`, 'none', { w: 2 }),
-      sleepy: P(`M${x - 5},${100} Q${x},${106} ${x + 5},${100}`, 'none', { w: 2 }),
-      sparkle: P(star(x, 101, 5.2, 4, .38), INK, { w: .8 }) + soft(C(x - 1, 100, .9), '#fff', .9),
-      heart: P(heart(x, 101, 4.2), '#e8607e', { w: 1.1 }),
-    }[kind]);
-    if (s.eyes === 'wink') o += eye(85, 'dots') + P('M110,101 Q115,96 120,101', 'none', { w: 2 });
-    else o += eye(85, s.eyes) + eye(115, s.eyes);
-    o += ({
-      smile: P('M95,111 Q100,116 105,111', 'none', { w: 1.6 }),
-      cat: P('M93,110 Q96.5,114 100,110 Q103.5,114 107,110', 'none', { w: 1.5 }),
-      open: P('M94.5,110 Q100,111 105.5,110 Q104,118 100,118 Q96,118 94.5,110Z', '#e98b9b', { w: 1.4 }),
-      o: P(E(100, 113, 2.6, 3), '#e98b9b', { w: 1.3 }),
-      fangs: P('M94,110 Q100,115 106,110', 'none', { w: 1.6 }) + P('M96,111.5 L97,115 L98.4,112.6Z M101.6,112.6 L103,115 L104,111.5Z', '#ffffff', { w: .9 }),
-    })[s.mouth];
-
-    // hats (front)
-    if (s.hat === 'wizard') {
-      o += P(E(100, 63, 50, 9), shade(acc, -.12), { sketch: true });
-      o += P('M60,64 Q86,38 116,2 Q118,34 142,62 Q100,70 60,64Z', acc, { sketch: true });
-      if (LOOK === 'pencil') o += `<path d="M60,64 Q86,38 116,2 Q118,34 142,62 Q100,70 60,64Z" fill="url(#hatch)"/>`;
-      o += P(star(104, 36, 5), '#f6d36b', { w: 1 }) + P(star(88, 52, 3.4), '#f6d36b', { w: 1 }) + P(star(120, 50, 2.6), '#f6d36b', { w: .9 });
-    }
-    if (s.hat === 'horn') {
-      o += P('M90,48 L100,4 L110,48 Q100,52 90,48Z', '#ffe6a3', { sketch: true });
-      o += P('M93,38 L107,33 M95,28 L106,24 M97,18 L104,15', 'none', { w: 1.1 });
-      o += soft('M98,10 L95,40', '#ffffff', .8);
-    }
-    if (s.hat === 'sprout') {
-      o += P('M100,42 C100,34 98,30 100,24', 'none', { w: 1.6 });
-      o += P('M100,26 Q84,10 72,22 Q84,34 100,26Z', shade(hood, -.25), { sketch: true });
-      o += P('M100,24 Q114,6 128,16 Q118,32 100,24Z', shade(hood, -.1), { sketch: true });    }
-    if (s.hat === 'shell') {
-      o += P('M74,52 C76,18 124,18 126,52 Q100,60 74,52Z', acc, { sketch: true });
-      o += P('M100,55 L82,30 M100,55 L91,24 M100,55 L100,22 M100,55 L109,24 M100,55 L118,30', 'none', { w: 1 });
-      o += P(C(100, 54, 4.2), '#fdf6f8', { w: 1.1 }) + soft(C(98.8, 52.8, 1.2), '#ffffff', .95);
-    }
-    if (s.hat === 'flowers') {
-      const fl = (x, y, c) => { let f = ''; for (let i = 0; i < 5; i++) { const a = i * 1.2566; f += P(C(x + Math.cos(a) * 4.2, y + Math.sin(a) * 4.2, 3.4), c, { w: 1 }); } return f + P(C(x, y, 2.4), '#f6d36b', { w: .9 }); };
-      o += fl(74, 56, '#f6b3cb') + fl(100, 44, '#c9b6f2') + fl(126, 56, '#fbe3a0');
-    }
-    if (s.hat === 'halo') { o += `<path d="${E(100, 24, 24, 6)}" fill="none" stroke="#f3cc5c" stroke-width="4.2"/>` + P(E(100, 24, 26.5, 8), 'none', { w: 1 }) + P(E(100, 24, 21.5, 4), 'none', { w: 1 }); }
-
-    // props, then hands on top (fingers always over the thing held)
-    let hands = [[80, 148], [120, 148]];
-    const prop = {
-      none: () => { hands = [[64, 160], [136, 160]]; return ''; },
-      wand: () => { hands = [[72, 156], [128, 142]]; return P('M116,162 L146,112', 'none', { w: 4.6, stroke: INK }) + `<path d="M116,162 L146,112" stroke="#b98b62" stroke-width="2.6" stroke-linecap="round"/>` + P(star(148, 108, 10), '#f6d36b', { sketch: true }) + P(sparkle(162, 96, 3.6), '#f6d36b', { w: .9 }) + P(sparkle(136, 98, 2.6), '#f6d36b', { w: .8 }); },
-      book: () => P(R(76, 140, 48, 11, 2), '#c7b5e8', { sketch: true }) + P(R(79, 129, 42, 11, 2), '#f6c8b6', { sketch: true }) + P(R(82, 118, 37, 11, 2), '#bfe3e5') + P('M84,145.5 h40 M86,134.5 h34', 'none', { w: .8 }) + P(star(100, 123.5, 3), '#f6d36b', { w: .8 }),
-      scroll: () => P(R(82, 128, 36, 36, 3), '#fbefd9', { sketch: true }) + P(E(100, 128, 19, 3.6), '#efdcb9', { w: 1.2 }) + P(E(100, 164, 19, 3.6), '#efdcb9', { w: 1.2 }) + P('M88,138 h24 M88,145 h20 M88,152 h22', 'none', { w: .9 }),
-      orb: () => soft(C(100, 145, 22), '#ffe9a8', .65) + P(C(100, 145, 14), '#ffd36b', { sketch: true }) + soft(C(95, 140, 4), '#ffffff', .8) + [0, 1, 2, 3, 4, 5, 6, 7].map((i) => { const a = i * .785; return P(`M${100 + Math.cos(a) * 18},${145 + Math.sin(a) * 18} L${100 + Math.cos(a) * 23},${145 + Math.sin(a) * 23}`, 'none', { w: 1.2 }); }).join(''),
-      crystal: () => P('M100,124 L113,136 L110,160 L100,168 L90,160 L87,136Z', '#c4adf0', { sketch: true }) + P('M87,136 L113,136 M100,124 L100,168 M90,160 L100,136 L110,160', 'none', { w: .9 }) + soft('M92,134 L96,128 L98,150Z', '#ffffff', .6),
-      pearl: () => P('M76,150 Q100,178 124,150 Q100,160 76,150Z', acc, { sketch: true }) + P('M86,158 L90,166 M100,162 L100,170 M114,158 L110,166', 'none', { w: .9 }) + P(C(100, 144, 12.5), '#fbf4f7', { sketch: true }) + soft('M90,148 A11,11 0 0,0 108,152', '#cde7f0', .7) + soft(E(95, 139, 3.4, 2.4), '#ffffff', .95),
-      moon: () => P(crescent(100, 145, 17), acc, { sketch: true }) + P(sparkle(116, 130, 3.4), '#f6d36b', { w: .9 }),
-      plant: () => { hands = [[86, 158], [114, 158]]; return P('M100,148 C99,138 101,132 100,126', 'none', { w: 1.5 }) + P('M100,134 Q84,120 78,132 Q88,142 100,134Z', '#8fc79a', { sketch: true }) + P('M100,128 Q116,112 124,124 Q114,136 100,128Z', '#a9d8a8', { sketch: true }) + P(heart(100, 120, 4.4), '#f6b3cb', { w: 1 }) + P('M86,146 L114,146 L110,168 L90,168Z', '#e9a785', { sketch: true }) + P('M86,146 h28', 'none', { w: 1 }); },
-      heart: () => P(heart(100, 146, 15), '#f59ab5', { sketch: true }) + soft(E(92, 138, 3.4, 2.2), '#ffffff', .85),
-    }[s.prop]();
-    o += prop;
-    for (const [x, y] of hands) o += P(C(x, y, 8.5), light, { sketch: true });
-
-    // chest badge
-    const badge = { none: '', star: P(star(100, 176, 6.5), '#f6d36b', { w: 1.1 }), moon: P(crescent(100, 176, 6.5), '#f6e3a2', { w: 1.1 }), heart: P(heart(100, 176, 5.4), '#f59ab5', { w: 1.1 }), paw: P(E(100, 178, 4.4, 3.6), light, { w: 1 }) + [[-5, -4], [-1.6, -7], [1.6, -7], [5, -4]].map(([dx, dy]) => P(C(100 + dx, 178 + dy, 1.8), light, { w: .9 })).join('') }[s.badge];
-    o += badge;
-
-    // emote marks near the head
-    const spots = [[158, 40], [42, 46], [170, 70]];
-    const mk = {
-      none: () => '',
-      sparkles: () => spots.map(([x, y], i) => P(sparkle(x, y, [6, 4.5, 3.5][i]), '#f6d36b', { w: 1 })).join(''),
-      hearts: () => spots.map(([x, y], i) => P(heart(x, y, [4.6, 3.6, 3][i]), '#f59ab5', { w: 1 })).join(''),
-      stars: () => spots.map(([x, y], i) => P(star(x, y, [5.6, 4.2, 3.4][i]), '#f6d36b', { w: 1 })).join(''),
-      zzz: () => P('M150,36 h10 l-10,10 h10', 'none', { w: 1.6 }) + P('M164,22 h7 l-7,7 h7', 'none', { w: 1.4 }) + P('M174,10 h5 l-5,5 h5', 'none', { w: 1.2 }),
-      music: () => P(E(152, 50, 4, 3), INK, { w: 1, tf: 'rotate(-18 152 50)' }) + P('M155.5,49 L157,30 Q164,32 166,38', 'none', { w: 1.5 }) + P(E(40, 56, 3, 2.3), INK, { w: 1, tf: 'rotate(-18 40 56)' }) + P('M42.6,55 L43.6,42', 'none', { w: 1.3 }),
-      bubbles: () => spots.map(([x, y], i) => P(C(x, y, [6, 4.4, 3.2][i]), '#e3f4f6', { w: 1 }) + soft(C(x - 1.6, y - 1.6, 1.2), '#ffffff', .95)).join(''),
-    }[s.mark];
-    o += mk();
-
-    return `<svg viewBox="0 0 200 204" role="img" aria-label="${s.name}, a ${s.theme || 'magic'} doodle friend"><g filter="url(#${LOOK})">${o}</g></svg>`;
-  }
-
-  // ---------- page wiring ----------
-  const paper = `<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .36  0 0 0 0 .3  0 0 0 .1 0'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`;
-  document.documentElement.style.setProperty('--paper-grain', `url("data:image/svg+xml,${encodeURIComponent(paper)}")`);
-
-  const rings = document.getElementById('rings');
-  const ringSvg = `<svg viewBox="0 0 34 18" width="34" height="18"><circle cx="24" cy="9" r="4.2" fill="#e3d6c8" stroke="#8d7f86" stroke-width="1.2"/><path d="M3,9 C3,2 26,1 26,9" fill="none" stroke="#4d4550" stroke-width="2.6" stroke-linecap="round"/><path d="M3,9 C3,2 26,1 26,9" fill="none" stroke="#a79ca8" stroke-width="1" stroke-linecap="round"/></svg>`;
-  function drawRings() { const h = rings.parentElement.clientHeight; const n = Math.max(6, Math.floor((h - 36) / 34)); rings.innerHTML = ringSvg.repeat(n); }
-
-  let cast = [];
-  let current = 0, work = {};
-
-  const castEl = document.getElementById('cast');
-  function drawCast() {
-    castEl.innerHTML = cast.map((c, i) => `<button class="friend${i === current ? ' on' : ''}" type="button" data-i="${i}" aria-pressed="${i === current}">${render(c)}<span class="washi" style="background:${WASHI[i % 4]};transform:rotate(${i % 2 ? 1.5 : -1.5}deg)">${esc(c.name)}</span><span class="theme">${esc(c.theme)}</span></button>`).join('');
-  }
-  const esc = (t) => String(t).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
-
-  castEl.addEventListener('click', (e) => {
-    const b = e.target.closest('.friend'); if (!b) return;
-    current = +b.dataset.i; work = { ...cast[current] };
-    syncFields(); drawAll();
-    const el = castEl.querySelector(`[data-i="${current}"]`); el.classList.add('hop');
-    document.getElementById('labh').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-  });
-
-  const fieldsEl = document.getElementById('fields');
-  fieldsEl.innerHTML =
-    `<label for="f-name">name<input type="text" id="f-name" maxlength="16"></label>` +
-    `<label for="f-hood">hood colour<input type="color" id="f-hood"></label>` +
-    `<label for="f-accent">accent colour<input type="color" id="f-accent"></label>` +
-    Object.entries(OPTIONS).map(([k, vals]) => `<label for="f-${k}">${k}<select id="f-${k}">${vals.map((v) => `<option>${v}</option>`).join('')}</select></label>`).join('');
-
-  function syncFields() {
-    document.getElementById('f-name').value = work.name;
-    document.getElementById('f-hood').value = work.hood;
-    document.getElementById('f-accent').value = work.accent;
-    for (const k of Object.keys(OPTIONS)) document.getElementById('f-' + k).value = work[k];
-  }
-  fieldsEl.addEventListener('input', (e) => {
-    const k = e.target.id.slice(2); if (!k) return;
-    work[k] = e.target.value || (k === 'name' ? 'Friend' : work[k]);
-    cast[current] = { ...work };
-    drawAll();
-  });
-
-  function specJson(s) {
-    const { name, theme, hood, accent, ...rest } = s;
-    return JSON.stringify({ name, theme, hood, accent, ...rest }, null, 2);
-  }
-  function drawAll() {
-    document.getElementById('big').innerHTML = render(work);
-    document.getElementById('bigName').textContent = work.name;
-    document.getElementById('bigName').style.background = WASHI[current % 4];
-    document.getElementById('json').textContent = specJson(work);
-    drawCast();
-  }
-
-  const NAMES = ['Mochi', 'Willow', 'Orion', 'Sable', 'Clover', 'Juniper', 'Selene', 'Bramble', 'Opal', 'Fenrir', 'Lumi', 'Coral'];
-  const HOODS = ['#b9a3dd', '#9eabc9', '#cfc8ea', '#a9d4b0', '#f7dbe7', '#bfe3e5', '#f6d9b8', '#d7c4ee', '#c6dcef', '#e8c6d6'];
-  const ACCENTS = ['#8a73c6', '#f2c25b', '#f4a7b9', '#c9b6f2', '#f6c8b6', '#8fc79a', '#e9d9a0'];
-  const THEMES = { wolf: { ears: 'wolf' }, elf: { ears: 'elf', hat: 'sprout' }, unicorn: { hat: 'horn', mane: 'rainbow' }, sea: { hat: 'shell', prop: 'pearl' }, magic: { hat: 'wizard' } };
-  const pick = (a) => a[Math.floor(Math.random() * a.length)];
-  document.getElementById('dice').addEventListener('click', () => {
-    const theme = pick(Object.keys(THEMES));
-    work = { name: pick(NAMES), theme, hood: pick(HOODS), accent: pick(ACCENTS) };
-    for (const [k, vals] of Object.entries(OPTIONS)) work[k] = pick(vals);
-    if (Math.random() < .5) work.wings = 'none';
-    Object.assign(work, THEMES[theme]);
-    if (work.hat === 'horn' && work.ears === 'wolf') work.ears = 'none';
-    cast[current] = { ...work };
-    syncFields(); drawAll();
-  });
-  document.getElementById('reset').addEventListener('click', () => { work = { ...CAST[current] }; cast[current] = { ...work }; syncFields(); drawAll(); });
-  document.getElementById('copy').addEventListener('click', async (e) => {
-    const btn = e.currentTarget, txt = document.getElementById('json').textContent;
-    try { await navigator.clipboard.writeText(txt); btn.textContent = 'Copied'; }
-    catch { const sel = getSelection(), rg = document.createRange(); rg.selectNodeContents(document.getElementById('json')); sel.removeAllRanges(); sel.addRange(rg); btn.textContent = 'Selected, press copy'; }
-    setTimeout(() => (btn.textContent = 'Copy spec'), 1600);
-  });
-
-  document.querySelector('.looks').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    LOOK = b.dataset.look;
-    document.querySelectorAll('.looks button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    drawAll();
-  });
-
-  fetch('cast.json', { cache: 'no-cache' }).then((r) => r.json()).then((d) => {
-    CAST = d.friends; cast = CAST.map((c) => ({ ...c })); work = { ...cast[0] };
-    syncFields(); drawAll(); drawRings();
-  }).catch(() => { castEl.textContent = 'The character sheet could not load. Refresh to try again.'; });
-  addEventListener('resize', drawRings);
-})();
-</script>
-
+<script src="renderer.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

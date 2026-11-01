@@ -1,0 +1,14 @@
+{
+  "order": 9,
+  "name": "Omega Pip",
+  "role": "the gossip",
+  "group": "pack",
+  "theme": "wolf",
+  "hood": "#c7c0b8",
+  "accent": "#e3d8c8",
+  "ears": "wolf",
+  "eyes": "side-eye",
+  "mouth": "o",
+  "mark": "whisper",
+  "size": "small"
+}
