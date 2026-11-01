@@ -1,0 +1,17 @@
+{
+  "order": 1,
+  "name": "Nova",
+  "theme": "magic",
+  "hood": "#b9a3dd",
+  "accent": "#8a73c6",
+  "ears": "none",
+  "hat": "wizard",
+  "mane": "none",
+  "eyes": "dots",
+  "mouth": "smile",
+  "prop": "wand",
+  "pattern": "stars",
+  "wings": "none",
+  "badge": "none",
+  "mark": "sparkles"
+}

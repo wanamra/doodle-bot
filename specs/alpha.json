@@ -1,0 +1,17 @@
+{
+  "order": 2,
+  "name": "Alpha",
+  "theme": "wolf",
+  "hood": "#9eabc9",
+  "accent": "#f2c25b",
+  "ears": "wolf",
+  "hat": "none",
+  "mane": "none",
+  "eyes": "dots",
+  "mouth": "fangs",
+  "prop": "orb",
+  "pattern": "none",
+  "wings": "none",
+  "badge": "star",
+  "mark": "stars"
+}
