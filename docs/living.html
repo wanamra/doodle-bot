@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Silver Moon Courtyard</title>
+<meta name="description" content="A living, tappable scene from The Luna Crown: the pack lives in the courtyard while the story unfolds in four chapters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Mali:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f2a52'/%3E%3Cpath d='M17 6 A10 10 0 0 0 17 26 A6.5 10 0 0 1 17 6Z' fill='%23fbf2d5'/%3E%3C/svg%3E">
+<style>
+  .scene-wrap { border-radius: 18px; overflow-x: auto; overflow-y: hidden; background: var(--night); box-shadow: 0 22px 50px -26px #2a2244; -webkit-overflow-scrolling: touch; }
+  #world { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+  #world .tap { cursor: pointer; }
+  #world .tap:focus, #world .tap:focus-visible { outline: none; }
+  #world .tap:focus-visible > :first-child { filter: drop-shadow(0 0 6px #fff6c8); }
+  .who { transition: transform var(--dur, 1.4s) ease-in-out, opacity .9s ease; }
+  .who .bob, .tap .sway { transform-box: fill-box; transform-origin: 50% 100%; }
+  .who .bob { animation: bob 3.2s ease-in-out infinite; }
+  .who.walking .bob { animation: walk .5s ease-in-out infinite; }
+  .who.float .bob { animation: float 3.6s ease-in-out infinite; }
+  .who.bow .bob { animation: bow 1.6s ease-in-out infinite; }
+  .who .bob.hop { animation: hop .55s ease-out 1; }
+  .gone { opacity: 0; pointer-events: none; }
+  @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-3px) scaleY(1.01) } }
+  @keyframes walk { 0%,100% { transform: translateY(0) rotate(-2deg) } 50% { transform: translateY(-6px) rotate(2deg) } }
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+  @keyframes bow { 0%,100% { transform: scaleY(1) } 40%,70% { transform: translateY(4px) scaleY(.9) rotate(-3deg) } }
+  @keyframes hop { 0%,100% { transform: translateY(0) } 35% { transform: translateY(-26px) scaleY(1.04) } 70% { transform: translateY(0) scaleY(.94) } }
+  .twinkle { animation: twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { opacity: .95 } 50% { opacity: .25 } }
+  .fly { animation: fly 9s ease-in-out infinite; }
+  @keyframes fly { 0%,100% { transform: translate(0,0) } 25% { transform: translate(18px,-14px) } 50% { transform: translate(-10px,-26px) } 75% { transform: translate(-20px,-6px) } }
+  .flicker { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .5s ease-in-out infinite alternate; }
+  @keyframes flicker { from { transform: scale(1,1) } to { transform: scale(.92,1.08) } }
+  .sway { animation: sway 4s ease-in-out infinite; }
+  @keyframes sway { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) } }
+  .spark { animation: spark 1s ease-out forwards; }
+  @keyframes spark { from { opacity: 1; transform: translate(0,0) } to { opacity: 0; transform: translate(var(--dx), var(--dy)) } }
+  .shoot { animation: shoot 1.2s ease-in forwards; }
+  @keyframes shoot { from { opacity: 0; transform: translate(0,0) } 15% { opacity: 1 } to { opacity: 0; transform: translate(-420px, 180px) } }
+  .bubble { animation: pop .25s ease-out; transform-box: fill-box; transform-origin: 50% 100%; }
+  @keyframes pop { from { transform: scale(.6); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+  .glow-moon { transition: opacity 1.2s ease, transform 1.2s ease; transform-box: fill-box; transform-origin: center; }
+  .chapter { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; background: var(--paper); border-radius: 16px; padding: 14px 16px; box-shadow: 0 10px 28px -20px #6b5a7a; }
+  .chapter .num { font: 700 20px/1 var(--f-hand); color: var(--lilac-deep); background: var(--washi-yellow); padding: 6px 12px 4px; transform: rotate(-2deg); white-space: nowrap; }
+  .chapter h2 { font-size: 30px; }
+  .chapter p { margin: 2px 0 0; color: var(--ink-soft); max-width: 70ch; }
+  .chapter .nav { display: flex; gap: 8px; align-items: center; }
+  .dots { display: flex; gap: 6px; justify-content: center; }
+  .dots button { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--lilac); background: transparent; padding: 0; cursor: pointer; }
+  .dots button[aria-current="step"] { background: var(--lilac-deep); border-color: var(--lilac-deep); }
+  .hint { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  @media (max-width: 760px) {
+    #world { min-width: 920px; }
+    .chapter { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .who .bob, .who.walking .bob, .who.float .bob, .who.bow .bob, .twinkle, .fly, .flicker, .sway { animation: none; }
+    .who { transition-duration: .2s; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">The Luna Crown · a living scene</div>
+    <h1>Silver Moon Courtyard <span class="wand">☾</span></h1>
+    <p class="lede">The pack lives here. Tap anyone to hear what they're thinking, tap the moon, the lanterns, the campfire and the owl, then turn the chapters to watch the story happen.</p>
+  </header>
+
+  <div class="bar">
+    <nav class="tabs" aria-label="Pages">
+      <a href="./">Studio</a>
+      <a href="./#luna-crown">The Luna Crown</a>
+      <a href="living.html" aria-current="page">Living scene</a>
+      <a href="./#scenes">Scene maker</a>
+    </nav>
+  </div>
+
+  <div class="scene-wrap" id="wrap"><svg id="world" viewBox="0 0 1600 900" role="img" aria-label="The Silver Moon pack courtyard at night"></svg></div>
+
+  <section class="chapter" aria-live="polite">
+    <span class="num" id="chNum">Chapter 1</span>
+    <div><h2 id="chTitle">An ordinary night</h2><p id="chText"></p></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev" type="button" aria-label="Previous chapter">◀</button>
+      <button class="btn" id="next" type="button">Next chapter ▶</button>
+    </div>
+  </section>
+  <div class="dots" id="dots" aria-label="Chapters"></div>
+  <p class="hint">On a phone, swipe sideways to see the whole courtyard.</p>
+
+  <footer>Characters from <a href="./#luna-crown">The Luna Crown</a>, drawn by the doodle bot. Living-world idea inspired by April Zhu's <a href="https://april-zhu.com/fieldnotes">Field Notes</a>.</footer>
+</div>
+<script src="renderer.js"></script>
+<script src="living.js"></script>
+</body>
+</html>

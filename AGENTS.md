@@ -62,3 +62,7 @@ Groups and cast: **mates** (Selene the wolfless maid, Selene reborn as the hidde
 ## Scenes
 
 The Scene maker tab on the site places up to four characters on a background (moonlit forest, pack hall, throne room, night sky, sketchbook paper) in a 9:16, 1:1 or 16:9 frame with an optional caption, and exports a PNG. Scene ideas are listed in `PRESETS` in `docs/app.js`; add new ones there using character file names.
+
+## Living scene
+
+`docs/living.html` + `docs/living.js` is the Silver Moon Courtyard: the Luna Crown cast living in a tappable world. Each chapter in `CHAPTERS` sets every character's position, mode (`idle` `walk` `float` `bow`), spec overrides and spoken line. Lines are short, original, and follow the same rules as specs: no real people, no violence. A character in the scene must exist in `specs/luna-crown/`.

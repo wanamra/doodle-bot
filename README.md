@@ -10,6 +10,7 @@ Hooded chibi characters, each drawn by code from a small JSON spec, in the **Lit
 | --- | --- |
 | **Studio** | The original six friends: Nova, Alpha, Luna, Elowen, Twinkle, Pearl |
 | **The Luna Crown** | A werewolf microdrama cast: Selene (before and reborn), Alpha Caelan, Seraphina, Kieran, Lucian, the Moon Goddess and the gossiping pack |
+| **Living scene** | The Silver Moon Courtyard: the Luna Crown pack living in a tappable world, told in four chapters (`docs/living.html`) |
 | **Scene maker** | Put up to four characters on a background in a 9:16, 1:1 or 16:9 frame, add a caption, download a full-size PNG |
 
 Every character has **PNG** (transparent, 1080 px tall) and **SVG** download buttons, and each page has **Download all** for a zip of the whole cast. The **Spec lab** lets you change any character, preview it, download it, and copy its spec.
@@ -30,6 +31,7 @@ Every character has **PNG** (transparent, 1080 px tall) and **SVG** download but
 | `tools/build.mjs` | checks every spec and writes `docs/cast.json` |
 | `docs/renderer.js` | the renderer and the list of allowed values |
 | `docs/app.js` | the site: sheets, downloads, spec lab, scene maker |
+| `docs/living.js` | the living scene: courtyard, chapters, character lines, taps |
 | `AGENTS.md` | rules and steps for the bot that draws new characters |
 
 ## Add a character by hand
